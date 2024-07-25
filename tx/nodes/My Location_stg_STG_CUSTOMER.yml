@@ -1,0 +1,90 @@
+name: stg_STG_CUSTOMER
+color: '#FC7917'
+isSource: false
+columns:
+  - name: CUSTOMER_ID
+    allowNulls: false
+    dataType: number(38,0)
+    defaultValue: ''
+    description: ''
+    id: 505f8a90-6391-47a3-b8b4-866146ae5d36
+  - name: NAME
+    allowNulls: false
+    dataType: varchar(16777216)
+    defaultValue: ''
+    description: ''
+    id: b2df967a-d8e0-4b3d-ac27-bef87923828d
+  - name: ADDRESS
+    allowNulls: false
+    dataType: varchar(16777216)
+    defaultValue: ''
+    description: ''
+    id: b196dbb0-6a40-4b00-aa69-c34ff6b8cfbd
+  - name: LOCATION_ID
+    allowNulls: false
+    dataType: number(38,0)
+    defaultValue: ''
+    description: ''
+    id: 73baae7d-ddf5-4ad7-8fd1-00decf505af8
+  - name: PHONE
+    allowNulls: false
+    dataType: varchar(15)
+    defaultValue: ''
+    description: ''
+    id: 7ea28590-4e36-4b98-917c-3f5f4bd00ea6
+  - name: ACCOUNT_BALANCE_USD
+    allowNulls: false
+    dataType: number(12,2)
+    defaultValue: ''
+    description: ''
+    id: 282cbbef-9815-4f55-a03b-3271668b6ada
+  - name: MARKET_SEGMENT
+    allowNulls: false
+    dataType: varchar(10)
+    defaultValue: ''
+    description: ''
+    id: 860d2917-51a0-4f40-b027-d80f5be3a775
+  - name: COMMENT
+    allowNulls: true
+    dataType: varchar(16777216)
+    defaultValue: ''
+    description: varchar COMMENT 'VARCHAR(117)
+    id: 509281fb-7870-43f5-837f-a0ede784a130
+  - name: __load_date
+    allowNulls: false
+    dataType: date
+    defaultValue: current_date()
+    description: load date
+    id: 38098c3e-6004-4fd9-887e-12876ca9f949
+  - name: __load_date_1
+    allowNulls: false
+    dataType: date
+    defaultValue: current_date()
+    description: load date
+    id: 3f517801-778f-41fd-8e1a-8bc41ae6f4fc
+logic: |-
+  SELECT
+      STG_CUSTOMER.CUSTOMER_ID AS "CUSTOMER_ID",
+      STG_CUSTOMER.NAME AS "NAME",
+      STG_CUSTOMER.ADDRESS AS "ADDRESS",
+      STG_CUSTOMER.LOCATION_ID AS "LOCATION_ID",
+      STG_CUSTOMER.PHONE AS "PHONE",
+      STG_CUSTOMER.ACCOUNT_BALANCE_USD AS "ACCOUNT_BALANCE_USD",
+      STG_CUSTOMER.MARKET_SEGMENT AS "MARKET_SEGMENT",
+      STG_CUSTOMER.COMMENT AS "COMMENT",
+      STG_CUSTOMER.__load_date AS "__load_date",
+      current_date() AS "__load_date_1"
+  FROM {{ref('', 'STG_CUSTOMER')}} "STG_CUSTOMER"
+description: ''
+logicalName: CUSTOMER dimension dimension
+columnSets: []
+templateId: f0b6697a-7eb4-4925-9f72-ec5eb6318733
+materialization: table
+storageLocationId: d6eb8270-4227-434f-9eca-22e7a615a1cc
+my_dropdown: option 1
+id: 732d673c-2f32-449d-b310-a780358cfe57
+nodeFormat: dynamic
+references:
+  92e112b6-deac-45e6-9785-4f82599c169b:
+    parentTableId: ed5f3e33-5d73-4d56-90fe-ac013279ee27
+    id: 92e112b6-deac-45e6-9785-4f82599c169b
