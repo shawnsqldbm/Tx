@@ -1,0 +1,97 @@
+name: stg_stg_STG_CUSTOMER
+color: '#FC7917'
+isSource: false
+columns:
+  - name: CUSTOMER_ID
+    allowNulls: false
+    dataType: number(38,0)
+    defaultValue: ''
+    description: ''
+    id: 192f41f7-eae5-493d-91c5-62a44970b79c
+  - name: NAME
+    allowNulls: false
+    dataType: varchar(16777216)
+    defaultValue: ''
+    description: ''
+    id: ee9d482f-8b6f-41e8-a695-ab88561b0049
+  - name: ADDRESS
+    allowNulls: false
+    dataType: varchar(16777216)
+    defaultValue: ''
+    description: ''
+    id: 9bf3a4e0-07b5-4ba0-88c4-c9d0914669a1
+  - name: LOCATION_ID
+    allowNulls: false
+    dataType: number(38,0)
+    defaultValue: ''
+    description: ''
+    id: 03b74abb-b08c-4d93-8777-b00e02d6807a
+  - name: PHONE
+    allowNulls: false
+    dataType: varchar(15)
+    defaultValue: ''
+    description: ''
+    id: 72cb4505-21de-47d2-b399-3d06052f7034
+  - name: ACCOUNT_BALANCE_USD
+    allowNulls: false
+    dataType: number(12,2)
+    defaultValue: ''
+    description: ''
+    id: 4234c817-894d-4551-864d-1a4d5b6c4ce3
+  - name: MARKET_SEGMENT
+    allowNulls: false
+    dataType: varchar(10)
+    defaultValue: ''
+    description: ''
+    id: 765ce624-b6f4-46a0-be52-15447094fc9a
+  - name: COMMENT
+    allowNulls: true
+    dataType: varchar(16777216)
+    defaultValue: ''
+    description: varchar COMMENT 'VARCHAR(117)
+    id: 57d3f5fc-abe4-42ca-94e6-6548376aabb2
+  - name: __load_date
+    allowNulls: false
+    dataType: date
+    defaultValue: current_date()
+    description: load date
+    id: e4979a6a-bcd6-4417-9418-3fbac93025ab
+  - name: __load_date_1
+    allowNulls: false
+    dataType: date
+    defaultValue: current_date()
+    description: load date
+    id: c361d393-66d6-40af-99de-f80e1b041a46
+  - name: __load_date_2
+    allowNulls: false
+    dataType: date
+    defaultValue: current_date()
+    description: load date
+    id: 54360593-3432-4e6a-8219-e408361a3351
+logic: |-
+  SELECT
+      stg_STG_CUSTOMER.CUSTOMER_ID AS "CUSTOMER_ID",
+      stg_STG_CUSTOMER.NAME AS "NAME",
+      stg_STG_CUSTOMER.ADDRESS AS "ADDRESS",
+      stg_STG_CUSTOMER.LOCATION_ID AS "LOCATION_ID",
+      stg_STG_CUSTOMER.PHONE AS "PHONE",
+      stg_STG_CUSTOMER.ACCOUNT_BALANCE_USD AS "ACCOUNT_BALANCE_USD",
+      stg_STG_CUSTOMER.MARKET_SEGMENT AS "MARKET_SEGMENT",
+      stg_STG_CUSTOMER.COMMENT AS "COMMENT",
+      stg_STG_CUSTOMER.__load_date AS "__load_date",
+      stg_STG_CUSTOMER.__load_date_1 AS "__load_date_1",
+      current_date() AS "__load_date_2"
+  FROM {{ref('My Location', 'stg_STG_CUSTOMER')}} "stg_STG_CUSTOMER"
+description: ''
+logicalName: CUSTOMER dimension dimension dimension
+columnSets: []
+templateId: f0b6697a-7eb4-4925-9f72-ec5eb6318733
+materialization: view
+storageLocationId: d6eb8270-4227-434f-9eca-22e7a615a1cc
+my_dropdown: option 1
+id: d3165d6f-e57f-4235-9553-06b890050a6d
+nodeFormat: dynamic
+references:
+  51c9974c-3b2a-4661-bb88-887b459a1082:
+    parentTableId: 732d673c-2f32-449d-b310-a780358cfe57
+    id: 51c9974c-3b2a-4661-bb88-887b459a1082
