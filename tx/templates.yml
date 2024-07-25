@@ -1,0 +1,174 @@
+- id: f0b6697a-7eb4-4925-9f72-ec5eb6318733
+  value: |2-
+
+      name: stage
+                
+      physicalName: 'stg_${parentPhysicalName}'           
+
+      logicalName: '${parentLogicalName} dimension'
+                                                   
+      color: 'orange'                                             # Color of object on diagram (string, green | blue | red | SqlDBM  colors, optional)
+        
+      inheritIdentifiersAs: pk                                    # Inherit primary key columns from parent table(s) as PK or non-PK attributes (string, pk | non-pk | none, default non-pk)
+      inheritAttributes: true                                     # Inherit non-pk columns from parent table(s) (boolean, default true)      
+        
+      defaultColumns:                                             
+        - name: '__load_date'                            
+          logicalName: 'load date'                     
+          dataType: date
+          comment: 'load date'                             
+          nullable: false                                      
+          unique: false                                        
+          default: 'current_date()'                             
+          position: last
+          logic: current_date()
+      
+      nodeSettings:                                           
+      - groupName: 'System UI Items'                          
+        groupDesc: 'System UI Items'                          
+        isEnabled: true                                                                            
+        
+        items:                                                                                               
+        - itemType: materialization                              
+          default: 'table'                                       
+          options:                                               
+          - 'table'  
+          - 'view'     
+          isRequired: true                                      
+          isEnabled: true 
+                                                       
+      - groupName: 'Column settings' 
+        groupDesc: 'Column settings'
+        isEnabled: true
+        
+        items: 
+        - itemType: columnSet                            
+          itemName: PK
+          itemDesc: 'Primary key'
+          isRequired: false
+          isEnabled: true
+        
+        - itemType: columnSet                            
+          itemName: AK
+          itemDesc: 'Alternate key'
+          isRequired: false
+          isEnabled: true
+          
+      - groupName: 'User UI Items'                            
+        groupDesc: 'Optional user configured items'                            
+        isEnabled: true
+                                                                                                    
+        items:                                                
+        - itemType: dropdownSelector                     
+          itemDesc: 'My dropdown selector'                    
+          itemName: my_dropdown                               
+          default: 'option 1'                                 
+          options:                                            
+          - 'option 1'
+          - 'option 2'
+          - option 3
+          isRequired: false                                   
+          isEnabled: true                                                     
+        
+        - itemType: columnSet                            
+          itemDesc: 'My multi column selector'                
+          itemName: my_columnSelector                         
+          isRequired: false                                   
+          isEnabled: true                                                    
+            
+        - itemType: multiSelector                             
+          itemDesc: 'My multi selector'                       
+          itemName: my_multi_selector                         
+          options:                                            
+          - 'option 1'                                        
+          - 'option 2'                                        
+          isRequired: false                                   
+          isEnabled: true                                     
+                                                       
+        - itemType: textArea                                  
+          itemDesc: 'My Text Area'                            
+          itemName: my_textArea                                                          
+          isRequired: false                                   
+          isEnabled: true                                     
+        
+        - itemType: textLine                                   
+          itemDesc: 'My text line'                             
+          itemName: my_textline                                       
+          isRequired: false                                    
+          isEnabled: true
+  name: stage
+  color: '#FC7917'
+  createScript: |-
+    {%- if materialization == 'table' %}
+        CREATE OR REPLACE TABLE {{ location.databaseName }}.{{ location.schemaName }}.{{name}}
+            (
+                {% for col in columns -%}
+                    {{ col.name }} {{ col.dataType }}          
+                    {%- if not col.allowNulls %} NOT NULL
+                        {%- if col.defaultValue | length > 0 %} DEFAULT {{ col.defaultValue }}{% endif %}
+                    {%- endif %}
+                    {%- if col.description | length > 0 %} COMMENT '{{ col.description }}'{% endif %}
+                    {%- if not loop.last %}, {% endif %}
+                {% endfor -%} 
+                {% for colSet in columnSets %}
+                    {%- if colSet.itemName == 'PK' -%}
+                    , CONSTRAINT  {{ colSet.setName }} PRIMARY KEY (
+                        {%- for pkCol in colSet.columns -%}
+                            {{pkCol.name}}
+                            {%- if not loop.last %}, {% endif -%}
+                        {%- endfor -%}
+                        )                         
+                        {%- if true %} RELY {% endif -%}
+                    {%- endif -%}
+                {%- endfor %}
+                {% for colSet in columnSets %}
+                    {%- if colSet.itemName == 'AK' -%}
+                    , CONSTRAINT  {{ colSet.setName }} UNIQUE (
+                        {%- for akCol in colSet.columns -%}
+                            {{akCol.name}}
+                            {%- if not loop.last %}, {% endif -%}
+                        {%- endfor -%}
+                        )                         
+                        {%- if true %} RELY {% endif -%}
+                    {%- endif -%}
+                {%- endfor %}        
+            )
+        {%- if description | length > 0 %} COMMENT = '{{ description }}'{% endif %}
+        ;
+        
+        {%- elif materialization == 'view' %}
+        CREATE OR REPLACE VIEW {{ location.mapping }}.{{name}}
+        (
+                {% for col in columns -%}
+                    {{ col.name }}  
+                    {%- if col.description | length > 0 %} COMMENT '{{ col.description }}'{% endif %}
+                    {%- if not loop.last %}, {% endif %}
+                {% endfor %}
+            {%- if description | length > 0 %} COMMENT = '{{ description }}'{% endif %}
+        )    
+        AS
+        {{logic}}
+        ;
+        {%- endif %}
+  runScript: |-
+    {% if materialization == 'table' %}
+        INSERT INTO {{ location.mapping }}.{{name}}
+        ( 
+            {%- for col in columns %}
+            {{ col.name }}
+            {%- if not loop.last %}, {% endif %}
+            {%- endfor %}
+        )
+        {{ logic }}
+        ;
+        
+        {%- elif materialization == 'view' %}
+        SELECT
+            {%- for col in columns %}
+            {{ col.name }}
+            {%- if not loop.last %}, {% endif %}
+            {%- endfor %}
+        FROM {{ location.mapping }}.{{name}}    
+        WHERE FALSE
+        {%- endif %}
+  isDefault: true
